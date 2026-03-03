@@ -17,11 +17,9 @@ Dato: 20/01/2026
 Version: 1.0
 */
 
-
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include "buttons.h"
-
 
 const int b[] = {bOK, bUP, bDown, bHome};
 int blength = sizeof(b) / sizeof(b[0]);
@@ -36,7 +34,6 @@ void initButtons() {
   }
 }
 
-
 // buttonClick(pin)
 // Debouncet detektert knappetrykk. Returnerer true ved gyldig kort trykk
 // (<=200 ms). Gir også lydfeedback via `buzzer` ved aksept.
@@ -49,10 +46,13 @@ bool buttonClick(int pin) {
 
   int state = digitalRead(pin);
 
-  if (state != lastState) { lastChange = millis(); }
+  if (state != lastState) {
+    lastChange = millis();
+  }
 
-  
-  if (millis() - lastChange > 10) { lastState = state; }
+  if (millis() - lastChange > 10) {
+    lastState = state;
+  }
 
   // Sjekker om knapp status er lav og om knappen var tidligere trykket
   if (state == HIGH && !wasPressed) {
@@ -88,45 +88,44 @@ bool buttonClick(int pin) {
     Serial.print("\n");
   }
   return result;
-
 }
 
-  // buttonHold(pin, holdTime)
-  // Returnerer true dersom knapp holdes i minst `holdTime` millisekunder.
-  bool buttonHold(int pin, unsigned long holdTime) {
-    static unsigned long pressStart = 0;
-    static unsigned long lastChange = 0;
-    static bool isPressed = false;
-    static bool holdState = HIGH;
-    bool result = false;
+// buttonHold(pin, holdTime)
+// Returnerer true dersom knapp holdes i minst `holdTime` millisekunder.
+bool buttonHold(int pin, unsigned long holdTime) {
+  static unsigned long pressStart = 0;
+  static unsigned long lastChange = 0;
+  static bool isPressed = false;
+  static bool holdState = HIGH;
+  bool result = false;
 
-    int state = digitalRead(pin);
+  int state = digitalRead(pin);
 
-    if (state != holdState) {
-      lastChange = millis();
-    }
-    if (millis() - lastChange > 30) {
-      holdState = state;
-    }
-
-    if (state == LOW && !isPressed) {
-      isPressed = true;
-      pressStart = millis();
-    }
-
-    if (state == HIGH && isPressed) {
-      isPressed = false;
-
-      unsigned long duration = millis() - pressStart;
-      Serial.print("Tid holdt inne: ");
-      Serial.print(duration);
-      Serial.print("\n");
-
-      if (duration >= holdTime) {
-        result = true;
-      } else {
-        result = false;
-      }
-    }
-    return result;
+  if (state != holdState) {
+    lastChange = millis();
   }
+  if (millis() - lastChange > 30) {
+    holdState = state;
+  }
+
+  if (state == LOW && !isPressed) {
+    isPressed = true;
+    pressStart = millis();
+  }
+
+  if (state == HIGH && isPressed) {
+    isPressed = false;
+
+    unsigned long duration = millis() - pressStart;
+    Serial.print("Tid holdt inne: ");
+    Serial.print(duration);
+    Serial.print("\n");
+
+    if (duration >= holdTime) {
+      result = true;
+    } else {
+      result = false;
+    }
+  }
+  return result;
+}

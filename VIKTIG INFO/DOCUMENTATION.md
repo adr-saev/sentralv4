@@ -18,15 +18,19 @@ Filer
 - [src/meny.cpp](src/meny.cpp)
   - UI- og menylogikk. Hovedfunksjon: `tegnMeny()`.
   - Styrer navigasjon, LCD-utskrift og leser knappetrykk via `buttons`.
-  - Viktige variabler: `aktivMeny`, `mainValg`, `tempValg`, `lysValg`, `farge_innst`.
+  - Viktige variabler: `aktivMeny`, `mainValg`, `tempValg`, `lysValg`, `isStueAktiv`, `isBadAktiv`, `manuelLys`.
+  - Underfunksjoner: `tegn_HOVEDMENY()`, `tegn_TEMPMENY()`, `tegn_LYSMENY()`, `tegn_LYSHOVED()`, `tegn_LYSBAD()`.
+  - Menyer for dør/vindu-sensorer (DOOR_WINDOW) og innstillinger (HJEM_MENY_INSTILLINGER) er delvis implementert.
 
 - [src/funksjoner.h](src/funksjoner.h)
   - Generelle hjelpere og eksterne variabler brukt på tvers.
 
 - [src/funksjoner.cpp](src/funksjoner.cpp)
-  - `tempAvlesning(...)` — leser analoge temperatur-sensorer.
-  - `serialTemp(...)` — printer temperaturer til Serial (debug).
-  - `lesSerial()` — tolker Serial-kommandoer for hurtigkontroll/testing.
+  - `readTMP36(...)` — leser analoge TMP36-temperatursensorer og lagrer i `tempTMP[]`.
+  - `readDHT11(...)` — leser DHT11-sensor for temperatur og fuktighet; lagrer i `tempDHT[]` og `fuktDHT[]`.
+  - `serialTempFukt(...)` — printer TMP36 og DHT11 data periodisk til Serial (debug-utskrift hvert 1000 ms).
+  - `serialLys(...)` — printer lysstatus til Serial (aktiv/inaktiv, automatisk/manuell).
+  - `lesSerial()` — tolker Serial-kommandoer for hurtigkontroll/testing av menyer.
 
 - [src/buttons.h](src/buttons.h)
   - Definerer knappepins og buzzer; deklarerer `initButtons()` osv.
@@ -38,9 +42,13 @@ Filer
 
 - [src/lys.h](src/lys.h)
   - Enum `lys_gruppe` og deklarasjoner for lysstyrings-API (`initlys`, `lysFarge`, `lysStyrke`).
-
-- [src/lys.cpp](src/lys.cpp)
-  - Konfigurerer RGB-pin og skriver PWM-verdier.
+s for stue (_LYS_STUE) og bad (_LYS_BAD); skriver PWM-verdier.
+  - `lysFarge(gruppe, r, g, b)` — setter farge for valgt gruppe (verdier 0-255).
+  - `aktivLys(gruppe, isAktiv, ...)` — slår lys av/på for en gruppe med valgfri styrkepointer.
+  - `oppdaterPhoto()` — leser fototransistor (A5) og oppdaterer automatisk lysstyrke.
+  - `oppdaterLys()` — oppdaterer lyskontroll basert på `manuelLys`-flag (automatisk vs manuell).
+  - `autoLysStyring(...)` — bestemmer om lys skal styres automatisk basert på lysintensitet.
+  - Flags: `isStueAktiv`, `isBadAktiv`, `manuelLys
   - `lysFarge(gruppe, r, g, b)` — setter farge for valgt gruppe (verdier 0-255).
   - Merk: nåværende implementasjon inneholder intern knappetoggle knyttet til `bOK`.
 
@@ -56,12 +64,22 @@ Filer
 
 Notater og anbefalinger
 ----------------------
-- For å gjøre `lysFarge()` rent ansvarlig, anbefales å flytte av/på-toggling (som i dagens implementasjon) til menylogikk i `meny.cpp`.
-- Vær oppmerksom på en eksisterende bug hvor et `if` muligens bruker `=` i stedet for `==` ved meny-sjekk (søk etter `if (aktivMeny =`).
+- **DHT11-sensor**: `readDHT11()` er implementert og fungerer for fukt- og temperaturlesing. `serialTempFukt()` viser data.
+- **Automatisk lysstyrking**: `autoLysStyring()` og `oppdaterPhoto()` bruker fototransistor for automatisk lysintensitet-justering. Kan toggles med `manuelLys`-flag.
+- **Dør-/vindu-sensorer**: `DOOR_WINDOW`-meny er deklarert men ikke implementert (knapp-handler er kommentert ut).
+- **Innstillinger-meny**: `HJEM_MENY_INSTILLINGER` er deklarert men ikke implementert.
+- **Lysmenyer**: `tegn_LYSHOVED()` og `tegn_LYSBAD()` er implementert for separat kontroll av stue og bad.
+- Vær oppmerksom på eksisterende bug hvor et `if` muligens bruker `=` i stedet for `==` ved meny-sjekk (søk etter `if (aktivMeny =`).
 
-Neste steg
----------
-- Gi beskjed hvis du vil at jeg skal: 1) generere en mer detaljert `DOCUMENTATION.md` med eksempler, 2) flytte toggle-logikk ut av `lys.cpp` og inn i `meny.cpp`, eller 3) kjøre en kompilering og rapportere eventuelle linker/kompilasjonsfeil.
+Prioriteringer for videre utvikling
+-----------------------------------
+1. **Bug-fix**: Finn og rett `if (aktivMeny =` som skal være `if (aktivMeny ==`.
+2. **Fullføring av menyer**: Implementer `DOOR_WINDOW`-meny (dør-/vindu-sensorer) og `HJEM_MENY_INSTILLINGER` (innstillings-meny).
+3. **Testing**: Verifiser at DHT11, TMP36, fototransistor og automatisk lysstyrking fungerer som forventet.
+4. **Kompilering**: Kjør kompilering og rapporterer eventuelle linker/kompilasjonsfeil.
+5. **Utvidelser**: Vurder ytterligere funksjonalitet basert på brukererfaring.
 
 ---
-Dokument laget automatisk av assistenten. Si ifra for endringer i formulering eller språk.
+Sist oppdatert: 3. mars 2026
+
+`Fil laget av KI`
