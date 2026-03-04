@@ -216,3 +216,8 @@ Menyen feiler når jeg prøver og gå rundt, tror det har noe med arduinoen. Har
 
 [**lys.cpp**](src/lys.cpp)
 Har fått lyset til og fungere, alt fungerer med arduino mega. Skal begynne på dimme funksjon
+
+
+# DATO 04/03/2026
+
+Har ikke jobbet i prosjektet i dag. Har jobbet på en test funksjon. Jeg gjobber med dimmingen, har fått dette til og fungere på tinkercad. Men har ikke koblet det opp på arduino enda. 
