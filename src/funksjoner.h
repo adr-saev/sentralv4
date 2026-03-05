@@ -27,6 +27,8 @@ const int tlength = sizeof(TMPpin) / sizeof(TMPpin[0]);
 const int flength = 1;
 
 extern int* _STYRKE_STUE;
+extern bool isDimmed;
+extern int dimme_retning;
 
 
 void readTMP36(const int TMPpin[], float tempTMP[], int tlength);

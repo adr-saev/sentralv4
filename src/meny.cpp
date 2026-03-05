@@ -13,6 +13,7 @@ Version: 1.0
 extern float tempTMP[];
 extern float tempDHT[];
 extern float fuktDHT[];
+extern int _STYRKE_BAD;
 
 //--------------------------------------------------
 
@@ -184,10 +185,10 @@ void tegn_TEMPMENY() {
     break;
 
   case SENSOR2:
-  
-  lcd.setCursor(0, 0);
-  lcd.print("< TEMP DHT     ");
-  lcd.setCursor(0, 1);
+
+    lcd.setCursor(0, 0);
+    lcd.print("< TEMP DHT     ");
+    lcd.setCursor(0, 1);
     lcd.setCursor(0, 1);
     lcd.print("> ");
     lcd.print(tempDHT[0]);
@@ -338,6 +339,8 @@ void tegn_LYSHOVED() {
 // overstyring er deaktivert. Navigering med UP/DOWN og OK For meny endring.
 
 void tegn_LYSBAD() {
+
+  int dimming_prosent;
   if (buttonClick(bUP)) {
     l_bad = (LYS_BAD)((int)l_bad + 1);
     if (l_bad > DIMMING) {
@@ -375,8 +378,18 @@ void tegn_LYSBAD() {
     }
     break;
   case DIMMING:
+
+    dimming_prosent = map(_STYRKE_BAD, 0, 255, 0, 100);
+
     lcd.setCursor(0, 1);
-    lcd.print("> Manuel Styring");
+    lcd.print("> DIM LYS: ");
+    lcd.print(dimming_prosent);
+    lcd.print("%");
+
+    if(buttonHolding(bOK)) {
+      isDimmed = true;
+      lysDimming(_LYS_BAD, _STYRKE_BAD, dimme_retning);
+    }
     break;
   }
 }

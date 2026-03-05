@@ -20,6 +20,11 @@ Version: 1.0
 //--------------------------------------------------
 // VARIABLER:
 int _STYRKE_STUE = 0;
+int fast_styrke = 255;
+int _STYRKE_BAD = 255;
+int dimme_retning = 5;
+
+bool isDimmed = false;
 //--------------------------------------------------
 
 // initlys()
@@ -43,23 +48,25 @@ void oppdaterPhoto() {
   }
 }
 void oppdaterLys() {
-  aktivLys(_LYS_STUE, isStueAktiv, &_STYRKE_STUE);
-  aktivLys(_LYS_BAD, isBadAktiv);
+  aktivLys(_LYS_STUE, isStueAktiv, &_STYRKE_STUE, nullptr);
+  aktivLys(_LYS_BAD, isBadAktiv,nullptr, &isDimmed);
 }
 
-bool autoLysStyring(bool manuelLys) { return !manuelLys; }
+bool autoLysStyring(bool manuelLys) { return !manuelLys; } // SITTER MANUEL STYR TIL SANT.
 // aktivLys(gruppe, isAktiv,
 // Skrur av og på lysene basert på isAktiv parameter
-void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr) {
+void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr,
+              bool *dimStatus = nullptr) {
   const int FAST_STYRKE = 255;
 
   if (!isAktiv) {
+    isDimmed = false;
     analogWrite(gruppe, 0);
     return;
   }
 
   if (gruppe == _LYS_STUE) {
-    if (manuelLys) {
+    if (manuelLys) { // MANUELL LYS = TRUE
       analogWrite(gruppe, FAST_STYRKE);
     } else {
       if (_STYRKE_STUE != nullptr) {
@@ -69,9 +76,34 @@ void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr) {
     return;
   }
   if (gruppe == _LYS_BAD) {
-    analogWrite(gruppe, FAST_STYRKE);
-    return;
+    if (dimStatus != nullptr) {
+      if (*dimStatus) {
+        analogWrite(gruppe, _STYRKE_BAD);
+
+      } else {
+        analogWrite(gruppe, FAST_STYRKE);
+      }
+      return;
+    }
   }
+}
+void lysDimming(lys_gruppe gruppe, int &lys_styrke, int &dimme_retning) {
+
+  lys_styrke += dimme_retning;
+
+  if (lys_styrke > 255 || lys_styrke < 0) {
+    dimme_retning = -dimme_retning;
+  }
+
+  analogWrite(gruppe, lys_styrke);
+
+  // DEBUG
+  Serial.print("Dimming Pin ");
+  Serial.print(gruppe);
+  Serial.print(" til: ");
+  Serial.println(lys_styrke);
+
+  delay(20);
 }
 
 /*Funksjon for å variere lysstyrken. I stuen skal man kunne dimme lysene.

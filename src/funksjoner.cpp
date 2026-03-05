@@ -133,6 +133,9 @@ void lesSerial() {
     if (cmd == "STATUS") {
       Serial.print("System OK\n");
     }
+    if(cmd == "STATUS_SENSOR") {
+      //INGEN ARBEID ENDA
+    }
 
     /*--------------------------------------------------*/
     if (cmd == "HOVEDMENY") {
@@ -147,6 +150,7 @@ void lesSerial() {
       Serial.print("Viser LYS_MENY");
       settMeny(LYS_MENY);
     }
+    
     /*--------------------------------------------------*/
     if (cmd == "HOME_TEMP") {
       Serial.print("Viser Home TEMP meny");
@@ -181,5 +185,36 @@ void lesSerial() {
       tempValg = SENSOR2;
     }
     /*--------------------------------------------------*/
+    if (cmd == "BAD_AKTIV") {
+      isBadAktiv = !isBadAktiv;
+      Serial.print(isBadAktiv ? "LYS STATUS: ON" : "LYS STATUS: OFF");
+    }
+    if (cmd == "BAD_DIM") {
+      isDimmed = !isDimmed;
+      Serial.print(isDimmed ? "Mode: Dimmed" : "Mode: FAST STYRKE");
+    }
+    if (cmd == "TEST_DIM_FUNC") {
+      isDimmed = true;
+      isBadAktiv = true;
+
+    } else if (cmd.startsWith("DIMMING_VERDI")) {
+      int nyVerdi;
+      if (sscanf(cmd.c_str(), "DIMMING_VERDI %d", &nyVerdi) == 1) {
+        dimme_retning = nyVerdi;
+        Serial.print("Ny dimmehastighet satt til: ");
+        Serial.println(dimme_retning);
+      } else {
+        Serial.println("Feil format! Bruk: DIMMING_VERDI [tall]");
+      }
+    }
+    /*--------------------------------------------------*/
+    if(cmd == "STUE_AKTIV") {
+      isStueAktiv = !isStueAktiv;
+      Serial.print(isStueAktiv ? "LYS STATUS: ON" : "LYS STATUS: OFF");
+    }
+    if (cmd == "STUE_MANUEL") {
+      manuelLys = !manuelLys;
+      Serial.println(manuelLys ? "Modus: Manuell Lys Styring" : "Modus: Autmoatisk Lys Styring");
+    }
   }
 }

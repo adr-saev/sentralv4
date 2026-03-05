@@ -31,6 +31,6 @@ const int buzzer = 29;
 
 void initButtons();
 bool buttonClick(int pin);
-bool buttonHold(int pin, unsigned long holdTime);
+bool buttonHolding(int pin);
 
 #endif

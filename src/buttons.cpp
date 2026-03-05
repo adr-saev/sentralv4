@@ -90,41 +90,22 @@ bool buttonClick(int pin) {
   return result;
 }
 
-// buttonHold(pin, holdTime)
-// Returnerer true dersom knapp holdes i minst `holdTime` millisekunder.
-bool buttonHold(int pin, unsigned long holdTime) {
-  static unsigned long pressStart = 0;
+bool buttonHolding(int pin) {
+  static bool stableState = HIGH;
   static unsigned long lastChange = 0;
-  static bool isPressed = false;
-  static bool holdState = HIGH;
   bool result = false;
 
-  int state = digitalRead(pin);
+  bool state = digitalRead(pin);
 
-  if (state != holdState) {
+  if (state != stableState) {
     lastChange = millis();
   }
-  if (millis() - lastChange > 30) {
-    holdState = state;
-  }
 
-  if (state == LOW && !isPressed) {
-    isPressed = true;
-    pressStart = millis();
-  }
+  if (millis() - lastChange > 10) {
+    stableState = state;
 
-  if (state == HIGH && isPressed) {
-    isPressed = false;
-
-    unsigned long duration = millis() - pressStart;
-    Serial.print("Tid holdt inne: ");
-    Serial.print(duration);
-    Serial.print("\n");
-
-    if (duration >= holdTime) {
+    if (stableState == LOW) {
       result = true;
-    } else {
-      result = false;
     }
   }
   return result;
