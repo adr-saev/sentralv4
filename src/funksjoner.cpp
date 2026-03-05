@@ -32,7 +32,7 @@ void readTMP36(const int TMPpin[], float tempTMP[], int tlength) {
     // int raw = analogRead(TMPpin[t]);
     /*-------------------------------------------------------------------------------------*/
     // DERSOM BRUK AV TMP36
-    // tempTMP[t] = ((raw * (5000.0 / 1024.0)) - 500) / 10;
+     //tempTMP[t] = ((raw * (5000.0 / 1024.0)) - 500) / 10;
 
     // VED BRUK AV POTENISOMETER
     // tempVal[t] = 100 - (raw / 1023.0) * 100;

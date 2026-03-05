@@ -48,7 +48,7 @@ void oppdaterLys() {
 }
 
 bool autoLysStyring(bool manuelLys) { return !manuelLys; }
-// aktivLys(gruppe, isAktiv)
+// aktivLys(gruppe, isAktiv,
 // Skrur av og på lysene basert på isAktiv parameter
 void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr) {
   const int FAST_STYRKE = 255;
