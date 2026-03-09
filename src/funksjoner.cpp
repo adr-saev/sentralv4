@@ -19,7 +19,6 @@ Version: 1.0
 
 extern DHT dht;
 
-
 // tempAvlesning(tempPin, tempVal, tlength)
 // Leser analoge sensorer definert i `tempPin[]` og skriver kalibrerte
 // temperaturverdier inn i `tempVal[]` (skalert/mapper for testpot).
@@ -32,7 +31,7 @@ void readTMP36(const int TMPpin[], float tempTMP[], int tlength) {
     // int raw = analogRead(TMPpin[t]);
     /*-------------------------------------------------------------------------------------*/
     // DERSOM BRUK AV TMP36
-     //tempTMP[t] = ((raw * (5000.0 / 1024.0)) - 500) / 10;
+    // tempTMP[t] = ((raw * (5000.0 / 1024.0)) - 500) / 10;
 
     // VED BRUK AV POTENISOMETER
     // tempVal[t] = 100 - (raw / 1023.0) * 100;
@@ -60,11 +59,10 @@ void readDHT11(float fuktDHT[], float tempDHT[], int flength) {
 
 void serialLys(lys_gruppe gruppe) {
 
-   static bool isAktiv = false;
+  static bool isAktiv = false;
   if (gruppe == _LYS_STUE) {
     isAktiv = isStueAktiv;
-  } 
-  else if (gruppe == _LYS_BAD) {
+  } else if (gruppe == _LYS_BAD) {
     isAktiv = isBadAktiv;
   }
 
@@ -78,7 +76,7 @@ void serialLys(lys_gruppe gruppe) {
     Serial.print("Lys PÅ (automatisk), styrke: ");
     Serial.println(_STYRKE_STUE);
   } else {
-        Serial.print("Lys gruppe ");
+    Serial.print("Lys gruppe ");
     Serial.print(gruppe);
     Serial.println(" skrudd PÅ");
   }
@@ -133,8 +131,8 @@ void lesSerial() {
     if (cmd == "STATUS") {
       Serial.print("System OK\n");
     }
-    if(cmd == "STATUS_SENSOR") {
-      //INGEN ARBEID ENDA
+    if (cmd == "STATUS_SENSOR") {
+      // INGEN ARBEID ENDA
     }
 
     /*--------------------------------------------------*/
@@ -150,27 +148,33 @@ void lesSerial() {
       Serial.print("Viser LYS_MENY");
       settMeny(LYS_MENY);
     }
-    
+    /*--------------------------------------------------*/
+    if (cmd == "RST_ALL") {
+      Serial.print("Viser RST_ALL");
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_ALL;
+    }
+    if (cmd == "RST_STUE") {
+      Serial.print("Viser RST_LYS_STUE");
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_LYS_STUE;
+    }
+    if (cmd == "RST_BAD") {
+      Serial.print("Viser RST_LYS_BAD");
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_LYS_BAD;
+    }
+
     /*--------------------------------------------------*/
     if (cmd == "HOME_TEMP") {
       Serial.print("Viser Home TEMP meny");
       settMeny(HOVEDMENY);
       mainValg = TEMP;
     }
-    if (cmd == "HOME_DOOR_WIND") {
-      Serial.print("Viser Home Door Window meny");
-      settMeny(HOVEDMENY);
-      mainValg = DOOR_WINDOW;
-    }
     if (cmd == "HOME_LYS") {
       Serial.print("Viser Home LYS meny");
       settMeny(HOVEDMENY);
       mainValg = LYS_HVDMNY;
-    }
-    if (cmd == "HOME_INSTILLINGER") {
-      Serial.print("Viser Home INSTILLINGER");
-      settMeny(HOVEDMENY);
-      mainValg = HJEM_MENY_INSTILLINGER;
     }
 
     /*--------------------------------------------------*/
@@ -209,13 +213,14 @@ void lesSerial() {
       }
     }
     /*--------------------------------------------------*/
-    if(cmd == "STUE_AKTIV") {
+    if (cmd == "STUE_AKTIV") {
       isStueAktiv = !isStueAktiv;
       Serial.print(isStueAktiv ? "LYS STATUS: ON" : "LYS STATUS: OFF");
     }
     if (cmd == "STUE_MANUEL") {
       manuelLys = !manuelLys;
-      Serial.println(manuelLys ? "Modus: Manuell Lys Styring" : "Modus: Autmoatisk Lys Styring");
+      Serial.println(manuelLys ? "Modus: Manuell Lys Styring"
+                               : "Modus: Autmoatisk Lys Styring");
     }
   }
 }

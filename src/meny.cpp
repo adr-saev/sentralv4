@@ -38,8 +38,8 @@ static AKTIV_TEMP_MENY tempValg = SENSOR1;
 static AKTIV_LYS_MENY lysValg = HOVEDROM;
 static LYS_HOVEDROM l_hvd = ACTIVE_HVDROM;
 static LYS_BAD l_bad = ACTIVE_BAD;
-
-
+static RST_INST rst = RST_ALL;
+static RST_YN rst_yn = RST_NO;
 
 // settMeny()
 // Funksjon brukt til og endre menyen til ønsket meny.
@@ -64,6 +64,9 @@ void tegnMeny() {
   case LYS_MNY_BAD:
     tegn_LYSBAD();
     break;
+  case RESET_INSTILLINGER:
+    tegn_RST_INST();
+    break;
   }
 }
 
@@ -78,7 +81,7 @@ void tegn_HOVEDMENY() {
   if (buttonClick(bUP)) {
     lcd.clear();
     mainValg = (AKTIV_HOVED_MENY)((int)mainValg + 1);
-    if (mainValg > HJEM_MENY_INSTILLINGER) {
+    if (mainValg > RESET_ALL) {
       mainValg = TEMP;
     }
 
@@ -94,7 +97,7 @@ void tegn_HOVEDMENY() {
     mainValg = (AKTIV_HOVED_MENY)((int)mainValg - 1);
 
     if (mainValg < TEMP) {
-      mainValg = HJEM_MENY_INSTILLINGER;
+      mainValg = RESET_ALL;
     }
 
     Serial.print("Sitter meny til: ");
@@ -113,12 +116,6 @@ void tegn_HOVEDMENY() {
       delay(200);
     }
     break;
-  case DOOR_WINDOW:
-    lcd.setCursor(0, 1);
-    lcd.print("> DOOR & WINDOW");
-    if (buttonClick(bOK)) { /*settMeny();*/
-    }
-    break;
   case LYS_HVDMNY:
     lcd.setCursor(0, 1);
     lcd.print("> Belysning     ");
@@ -128,10 +125,12 @@ void tegn_HOVEDMENY() {
     }
     break;
 
-  case HJEM_MENY_INSTILLINGER:
+  case RESET_ALL:
     lcd.setCursor(0, 1);
-    lcd.print("> Instillinger ");
-    if (buttonClick(bOK)) { /*settMeny();*/
+    lcd.print("> RESET ALL    ");
+    if (buttonClick(bOK)) {
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_ALL;
       delay(200);
     }
   }
@@ -173,6 +172,7 @@ void tegn_TEMPMENY() {
   if (buttonClick(bHome)) {
     lcd.clear();
     settMeny(HOVEDMENY);
+    delay(200);
   }
 
   switch (tempValg) {
@@ -199,7 +199,7 @@ void tegn_TEMPMENY() {
     lcd.setCursor(8, 1);
     // lcd.print("Fukt: ");
     lcd.print(fuktDHT[0]);
-    lcd.print("%");
+    lcd.print("%   ");
     break;
   }
 }
@@ -212,7 +212,7 @@ void tegn_LYSMENY() {
   if (buttonClick(bUP)) {
     lcd.clear();
     lysValg = (AKTIV_LYS_MENY)((int)lysValg + 1);
-    if (lysValg > LYS_INSTILLINGER) {
+    if (lysValg > AKTIV_ALL) {
       lysValg = HOVEDROM;
     }
     Serial.print("Sitter meny til: ");
@@ -225,11 +225,16 @@ void tegn_LYSMENY() {
     lcd.clear();
     lysValg = (AKTIV_LYS_MENY)((int)lysValg - 1);
     if (lysValg < HOVEDROM) {
-      lysValg = LYS_INSTILLINGER;
+      lysValg = AKTIV_ALL;
     }
     Serial.print("Sitter meny til: ");
     Serial.print(lysValg);
     Serial.print("\n");
+    delay(200);
+  }
+  if (buttonClick(bHome)) {
+    lcd.clear();
+    settMeny(HOVEDMENY);
     delay(200);
   }
 
@@ -238,7 +243,7 @@ void tegn_LYSMENY() {
   switch (lysValg) {
   case HOVEDROM:
     lcd.setCursor(0, 1);
-    lcd.print("> Hovedrom");
+    lcd.print("> Hovedrom     ");
 
     if (buttonClick(bOK)) {
       settMeny(LYS_MNY_HOVEDROM);
@@ -247,7 +252,7 @@ void tegn_LYSMENY() {
     break;
   case BAD:
     lcd.setCursor(0, 1);
-    lcd.print("> BAD");
+    lcd.print("> BAD         ");
     if (buttonClick(bOK)) {
       settMeny(LYS_MNY_BAD);
       delay(200);
@@ -264,15 +269,6 @@ void tegn_LYSMENY() {
       delay(200);
     }
     break;
-  case LYS_INSTILLINGER:
-    lcd.setCursor(0, 1);
-    lcd.print("Lys Innst.     ");
-    /*if (buttonClick(bOK)) {
-      settMeny(LYS_INNST_MENY);
-      delay(200);
-    }*/
-
-    break;
   }
 }
 
@@ -285,7 +281,7 @@ void tegn_LYSHOVED() {
     lcd.clear();
     l_hvd = (LYS_HOVEDROM)((int)l_hvd + 1);
 
-    if (l_hvd > LYS_STYRING) {
+    if (l_hvd > STUE_RESET) {
       l_hvd = ACTIVE_HVDROM;
     }
 
@@ -300,7 +296,7 @@ void tegn_LYSHOVED() {
     l_hvd = (LYS_HOVEDROM)((int)l_hvd - 1);
 
     if (l_hvd < ACTIVE_HVDROM) {
-      l_hvd = LYS_STYRING;
+      l_hvd = STUE_RESET;
     }
     Serial.print("Sitter meny til: ");
     Serial.print(l_hvd);
@@ -308,9 +304,14 @@ void tegn_LYSHOVED() {
 
     delay(200);
   }
+  if (buttonClick(bHome)) {
+    lcd.clear();
+    settMeny(LYS_MENY);
+    delay(200);
+  }
 
   lcd.setCursor(0, 0);
-  lcd.print("HVDROM - INNST");
+  lcd.print("HVDROM - INST  ");
 
   switch (l_hvd) {
   case ACTIVE_HVDROM:
@@ -334,6 +335,19 @@ void tegn_LYSHOVED() {
     }
 
     break;
+  case STUE_RESET:
+    lcd.setCursor(0, 1);
+    lcd.print("> Reset Inst   ");
+
+    if (buttonClick(bOK)) {
+      lcd.clear();
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_LYS_STUE;
+      rst_yn = RST_NO;
+
+      delay(200);
+    }
+    break;
   }
 }
 
@@ -347,7 +361,7 @@ void tegn_LYSBAD() {
   int dimming_prosent;
   if (buttonClick(bUP)) {
     l_bad = (LYS_BAD)((int)l_bad + 1);
-    if (l_bad > DIMMING) {
+    if (l_bad > BAD_RESET) {
       l_bad = ACTIVE_BAD;
     }
     Serial.print("Sitter meny til: ");
@@ -359,7 +373,7 @@ void tegn_LYSBAD() {
   if (buttonClick(bDown)) {
     l_bad = (LYS_BAD)((int)l_bad - 1);
     if (l_bad < ACTIVE_BAD) {
-      l_bad = DIMMING;
+      l_bad = BAD_RESET;
     }
     Serial.print("Sitter meny til: ");
     Serial.print(l_bad);
@@ -367,9 +381,14 @@ void tegn_LYSBAD() {
 
     delay(200);
   }
+  if (buttonClick(bHome)) {
+    lcd.clear();
+    settMeny(LYS_MENY);
+    delay(200);
+  }
 
   lcd.setCursor(0, 0);
-  lcd.print("BAD - INNST  ");
+  lcd.print("BAD - INNST    ");
 
   switch (l_bad) {
   case ACTIVE_BAD:
@@ -388,11 +407,165 @@ void tegn_LYSBAD() {
     lcd.setCursor(0, 1);
     lcd.print("> DIM LYS: ");
     lcd.print(dimming_prosent);
-    lcd.print("%");
+    lcd.print("%    ");
 
-    if(isBadAktiv && buttonHolding(bOK)) {
+    if (isBadAktiv && buttonHolding(bOK)) {
       isDimmed = true;
       lysDimming(_LYS_BAD, _STYRKE_BAD, dimme_retning);
+    }
+    break;
+  case BAD_RESET:
+    lcd.setCursor(0, 1);
+    lcd.print("> Reset Inst   ");
+
+    if (buttonClick(bOK)) {
+      lcd.clear();
+      settMeny(RESET_INSTILLINGER);
+      rst = RST_LYS_BAD;
+      rst_yn = RST_NO;
+
+      delay(200);
+    }
+    break;
+  }
+}
+void tegn_RST_INST() {
+
+  if (buttonClick(bUP)) {
+    lcd.clear();
+    rst_yn = (RST_YN)((int)rst_yn + 1);
+    if (rst_yn > RST_YES) {
+      rst_yn = RST_NO;
+    }
+    delay(200);
+    Serial.print("Bytter Meny");
+  }
+  if (buttonClick(bDown)) {
+    lcd.clear();
+    rst_yn = (RST_YN)((int)rst_yn - 1);
+    if (rst_yn < RST_NO) {
+      rst_yn = RST_YES;
+    }
+    delay(200);
+    Serial.print("Bytter Meny");
+  }
+
+  switch (rst) {
+  case RST_ALL:
+    lcd.setCursor(0, 0);
+    lcd.print("Reset alt?     ");
+
+    switch (rst_yn) {
+    case RST_NO:
+
+      if (buttonClick(bOK)) {
+        lcd.clear();
+        settMeny(HOVEDMENY);
+        delay(200);
+      }
+
+      lcd.setCursor(0, 1);
+      lcd.print("> NO      YES  ");
+      break;
+    case RST_YES:
+      if (buttonClick(bOK)) {
+        lcd.clear();
+        isBadAktiv = false;
+        isStueAktiv = false;
+        manuelLys = true;
+        isDimmed = false;
+
+        lcd.clear();
+        lcd.setCursor(0, 1);
+        lcd.print("ALT RESETTET");
+        delay(1500);
+
+        settMeny(HOVEDMENY);
+        mainValg = TEMP;
+
+        delay(200);
+      }
+
+      lcd.setCursor(0, 1);
+      lcd.print(" NO     > YES  ");
+      break;
+    }
+    break;
+  case RST_LYS_STUE:
+    lcd.setCursor(0, 0);
+    lcd.print("Reset lys stue?");
+
+    switch (rst_yn) {
+    case RST_NO:
+
+      if (buttonClick(bOK)) {
+        lcd.clear();
+        settMeny(LYS_MNY_HOVEDROM);
+        delay(200);
+      }
+
+      lcd.setCursor(0, 1);
+      lcd.print("> NO      YES  ");
+      break;
+    case RST_YES:
+
+      if (buttonClick(bOK)) {
+        isStueAktiv = false;
+        manuelLys = false;
+        _STYRKE_STUE = 255;
+
+        lcd.clear();
+        lcd.setCursor(0, 1);
+        lcd.print("LYS STUE RESATT");
+        delay(1500);
+
+        settMeny(HOVEDMENY);
+        mainValg = TEMP;
+
+        delay(200);
+      }
+
+      lcd.setCursor(0, 1);
+      lcd.print(" NO     > YES  ");
+      break;
+    }
+    break;
+  case RST_LYS_BAD:
+    lcd.setCursor(0, 0);
+    lcd.print("Reset lys bad? ");
+
+    switch (rst_yn) {
+    case RST_NO:
+
+      if (buttonClick(bOK)) {
+        lcd.clear();
+        settMeny(LYS_MNY_BAD);
+      }
+
+      lcd.setCursor(0, 1);
+      lcd.print("> NO      YES  ");
+      break;
+    case RST_YES:
+
+      if (buttonClick(bOK)) {
+        lcd.clear();
+        isBadAktiv = false;
+        isDimmed = false;
+        _STYRKE_BAD = 255;
+
+        lcd.clear();
+        lcd.setCursor(0, 1);
+        lcd.print("LYS BAD RESATT");
+        delay(1500);
+
+        settMeny(HOVEDMENY);
+        mainValg = TEMP;
+
+        delay(200);
+      }
+      lcd.setCursor(0, 1);
+      lcd.print(" NO     > YES  ");
+      break;
     }
     break;
   }

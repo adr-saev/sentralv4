@@ -20,6 +20,7 @@
 extern AKTIV_TEMP_MENY tempValg;
 extern AKTIV_HOVED_MENY mainValg;
 extern AKTIV_LYS_MENY lysValg;
+extern RST_INST rst;
 
 const int TMPpin[] = {A0 /*A2*/};
 const int tlength = sizeof(TMPpin) / sizeof(TMPpin[0]);

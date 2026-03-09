@@ -52,7 +52,7 @@ void setup() {
   initButtons();
   initlys();
   delay(1500);
-  settMeny(LYS_MNY_BAD);
+  //settMeny(LYS_MNY_BAD);
 }
 
 void loop() {

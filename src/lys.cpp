@@ -63,6 +63,7 @@ void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr,
     
     if(gruppe == _LYS_BAD) {
       isDimmed = false;
+      _STYRKE_BAD = 255;
     }
 
     analogWrite(gruppe, 0);
