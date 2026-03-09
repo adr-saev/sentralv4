@@ -1,21 +1,25 @@
 /*
+Beskrivelse: Knapp-håndteringsfunksjoner for Arduino-systemet.
+            Håndterer knappetrykk med debouncing og hold-detektering.
 
+----------------------------------------------------
+Funksjoner:
+    - initButtons(): Initialiserer knapp-pinner som input
+    - buttonClick(pin): Detekterer kort knappetrykk med debouncing
+    - buttonHolding(pin): Detekterer om knapp holdes nede
 
-Funksjon for å sjekke om knappen er holdt lenge nok,
-holdTime bestemmer hvor lenge den skal holdes for at det skal registreres som
-true holdTime måles i millis, så 1 sek = 1000
-
-Eksempel: if(buttonHold(bOk, 1000){
-    settMeny(ALARM_FERDIG_MENY);
-
-})
-
-
+----------------------------------------------------
 
 Skrevet av: Adrian Nesse
-Dato: 20/01/2026
+Dato: 09/03/2026
 Version: 1.0
-*/
+
+----------------------------------------------------
+POTENSIELLE FEIL:
+    -
+    -
+
+--------------------------------------------------*/
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
@@ -90,6 +94,9 @@ bool buttonClick(int pin) {
   return result;
 }
 
+// buttonHolding(pin)
+// Detekterer om en knapp holdes nede. Returnerer true så lenge knappen er trykket,
+// med debouncing for å unngå falske signaler.
 bool buttonHolding(int pin) {
   static bool stableState = HIGH;
   static unsigned long lastChange = 0;

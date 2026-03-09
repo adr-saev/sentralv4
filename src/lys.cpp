@@ -1,14 +1,30 @@
 
 /*
-Hovedkilde til menyene, styrer UI ( User Interface )
+Beskrivelse: Lysstyringsfunksjoner for stue og bad.
+            Inkluderer automatisk lysstyring via fototransistor og manuell dimming.
 
+----------------------------------------------------
+Funksjoner:
+    - initlys(): Initialiserer lys-pinner som output
+    - oppdaterPhoto(): Leser fototransistor og oppdaterer lysstyrke for stue
+    - oppdaterLys(): Aktiverer/deaktiverer lys basert på flagg
+    - autoLysStyring(): Bestemmer om automatisk styring er aktiv
+    - aktivLys(): Setter lysstyrke for spesifikk gruppe
+    - lysDimming(): Dimmer lys ved å endre PWM-verdi
+    - lysStyrke(): Placeholder for fremtidig lysstyrke-funksjonalitet
 
-
+----------------------------------------------------
 
 Skrevet av: Adrian Nesse
-Dato: 25/01/2026
+Dato: 09/03/2026
 Version: 1.0
-*/
+
+----------------------------------------------------
+POTENSIELLE FEIL:
+    -
+    -
+
+--------------------------------------------------*/
 
 //--------------------------------------------------
 // INKLUDE:
@@ -35,6 +51,9 @@ void initlys() {
   Serial.println("LED PINs initialisert");
 }
 
+// oppdaterPhoto()
+// Leser fototransistor-verdien og mapper den til lysstyrke for stuen.
+// Oppdateres hver 100 ms for responsiv lysstyring.
 void oppdaterPhoto() {
   static unsigned long lastRead = 0;
   unsigned long now = millis();
@@ -47,11 +66,18 @@ void oppdaterPhoto() {
     _STYRKE_STUE = constrain(_STYRKE_STUE, 50, 255);
   }
 }
+
+// oppdaterLys()
+// Oppdaterer lysstatus for både stue og bad basert på aktive flagg og modus.
+// Kaller aktivLys for hver gruppe med relevante parametere.
 void oppdaterLys() {
   aktivLys(_LYS_STUE, isStueAktiv, &_STYRKE_STUE, nullptr);
   aktivLys(_LYS_BAD, isBadAktiv,nullptr, &isDimmed);
 }
 
+// autoLysStyring(manuelLys)
+// Returnerer true hvis automatisk lysstyring er aktiv (manuelLys er false).
+// Brukes for å bestemme om lys skal styres av fototransistor eller manuelt.
 bool autoLysStyring(bool manuelLys) { return !manuelLys; } // SITTER MANUEL STYR TIL SANT.
 // aktivLys(gruppe, isAktiv,
 // Skrur av og på lysene basert på isAktiv parameter

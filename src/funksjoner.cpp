@@ -1,13 +1,26 @@
 /*
-Forskjellige bakgrunns funksjoner som gjennomføres på
-forskjellige menyer
+Beskrivelse: Hjelpefunksjoner for sensoravlesning og Serial-kommunikasjon.
+            Inkluderer temperatur/fuktighetsavlesning og debugging-kommandoer.
 
+----------------------------------------------------
+Funksjoner:
+    - readTMP36(): Leser temperatur fra TMP36-sensor
+    - readDHT11(): Leser temperatur og fuktighet fra DHT11-sensor
+    - serialTempFukt(): Printer sensorverdier til Serial for debugging
+    - lesSerial(): Behandler kommandoer mottatt via Serial
 
+----------------------------------------------------
 
 Skrevet av: Adrian Nesse
-Dato: 25/01/2026
+Dato: 09/03/2026
 Version: 1.0
-*/
+
+----------------------------------------------------
+POTENSIELLE FEIL:
+    -
+    -
+
+--------------------------------------------------*/
 
 #include <Arduino.h>
 
@@ -43,6 +56,9 @@ void readTMP36(const int TMPpin[], float tempTMP[], int tlength) {
   }
 }
 
+// readDHT11(fuktDHT, tempDHT, flength)
+// Leser fuktighet og temperatur fra DHT11-sensoren og skriver inn i arrays.
+// Bruker millis() for å begrense oppdateringsfrekvens til hver 1000 ms.
 void readDHT11(float fuktDHT[], float tempDHT[], int flength) {
 
   static unsigned long lastRead = 0;

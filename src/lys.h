@@ -28,6 +28,6 @@ void lysDimming(lys_gruppe gruppe, int &_STYRKE_BAD, int &dimme_retning);
 void initlys();
 void oppdaterPhoto();
 void oppdaterLys();
-void lysStyrke();
+
 
 #endif

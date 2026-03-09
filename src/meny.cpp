@@ -1,12 +1,30 @@
 /*
-Hovedkilde til menyene, styrer UI ( User Interface )
+Beskrivelse: Meny-system for LCD-grensesnitt.
+            Håndterer navigasjon og visning av forskjellige menyer for temperatur, lys og reset.
 
+----------------------------------------------------
+Funksjoner:
+    - settMeny(): Setter aktiv meny
+    - tegnMeny(): Hovedfunksjon for meny-håndtering
+    - tegn_HOVEDMENY(): Viser hovedmeny med valgmuligheter
+    - tegn_TEMPMENY(): Viser temperaturmeny med sensorverdier
+    - tegn_LYSMENY(): Viser lysmeny med valg for stue/bad
+    - tegn_LYSHOVED(): Viser undermeny for stue-lys
+    - tegn_LYSBAD(): Viser undermeny for bad-lys med dimming
+    - tegn_RST_INST(): Viser reset-meny med bekreftelse
 
+----------------------------------------------------
 
 Skrevet av: Adrian Nesse
-Dato: 25/01/2026
+Dato: 09/03/2026
 Version: 1.0
-*/
+
+----------------------------------------------------
+POTENSIELLE FEIL:
+    -
+    -
+
+--------------------------------------------------*/
 
 //--------------------------------------------------
 // Variabler:
@@ -411,7 +429,7 @@ void tegn_LYSBAD() {
 
     if (isBadAktiv && buttonHolding(bOK)) {
       isDimmed = true;
-      lysDimming(_LYS_BAD, _STYRKE_BAD, dimme_retning);
+      lysDimming(_LYS_BAD, _STYRKE_BAD, dimme_retning);  // Dimmer lys for bad ved å holde OK-knappen
     }
     break;
   case BAD_RESET:
@@ -429,6 +447,9 @@ void tegn_LYSBAD() {
     break;
   }
 }
+// tegn_RST_INST()
+// Rendrer reset instillinger meny, med valg mellom JA og NEI for å bekrefte reset
+// av forskjellige instillinger (alt, lys stue, lys bad). Navigering med UP/DOWN og OK for bekreftelse.
 void tegn_RST_INST() {
 
   if (buttonClick(bUP)) {

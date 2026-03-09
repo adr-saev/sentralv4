@@ -1,11 +1,25 @@
 
 /*
- testfunk.ino
+Beskrivelse: Testsketch for RGB-lyskontroll.
+            Brukes for manuell verifikasjon av lysfunksjoner. Ikke brukt i hovedprosjektet.
 
- Enkel testsketch for RGB-lyskontroll.
- - Brukes for manuell verifikasjon av `initlys()` og `lysFarge()`.
- - Ikke brukt i hovedprosjektet; behold som referanse/test.
-*/
+----------------------------------------------------
+Funksjoner:
+    - initlys(): Initialiserer RGB-pinner
+    - lysFarge(): Setter farge på RGB-lys for BAD eller STUE
+
+----------------------------------------------------
+
+Skrevet av: Adrian Nesse
+Dato: 09/03/2026
+Version: 1.0
+
+----------------------------------------------------
+POTENSIELLE FEIL:
+    -
+    -
+
+--------------------------------------------------*/
 
 enum lys_gruppe { BAD, STUE };
 void initLys();

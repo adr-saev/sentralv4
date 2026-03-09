@@ -4,7 +4,7 @@ Kort dokumentasjon og oversikt over kildefiler under `src/`.
 
 Formål
 ------
-Dette dokumentet oppsummerer ansvar og nøkkelfunksjoner i hver fil. Kommentarene i kildefilene er skrevet på norsk; godkjennede kommentarer er allerede lagt inn. Bruk dette som en rask referanse.
+Dette dokumentet oppsummerer ansvar og nøkkelfunksjoner i hver fil. Kommentarene i kildefilene er skrevet på norsk og nylig oppdatert med standardiserte header-kommentarer og kommentarer på spesialfunksjoner. Bruk dette som en rask referanse.
 
 Filer
 -----
@@ -19,7 +19,7 @@ Filer
   - UI- og menylogikk. Hovedfunksjon: `tegnMeny()`.
   - Styrer navigasjon, LCD-utskrift og leser knappetrykk via `buttons`.
   - Viktige variabler: `aktivMeny`, `mainValg`, `tempValg`, `lysValg`, `isStueAktiv`, `isBadAktiv`, `manuelLys`.
-  - Underfunksjoner: `tegn_HOVEDMENY()`, `tegn_TEMPMENY()`, `tegn_LYSMENY()`, `tegn_LYSHOVED()`, `tegn_LYSBAD()`.
+  - Underfunksjoner: `tegn_HOVEDMENY()`, `tegn_TEMPMENY()`, `tegn_LYSMENY()`, `tegn_LYSHOVED()`, `tegn_LYSBAD()`, `tegn_RST_INST()`.
   - Menyer for dør/vindu-sensorer (DOOR_WINDOW) og innstillinger (HJEM_MENY_INSTILLINGER) er delvis implementert.
 
 - [src/funksjoner.h](src/funksjoner.h)
@@ -41,16 +41,17 @@ Filer
   - `buttonHold(pin, holdTime)` — registrerer langt trykk.
 
 - [src/lys.h](src/lys.h)
-  - Enum `lys_gruppe` og deklarasjoner for lysstyrings-API (`initlys`, `lysFarge`, `lysStyrke`).
-s for stue (_LYS_STUE) og bad (_LYS_BAD); skriver PWM-verdier.
-  - `lysFarge(gruppe, r, g, b)` — setter farge for valgt gruppe (verdier 0-255).
-  - `aktivLys(gruppe, isAktiv, ...)` — slår lys av/på for en gruppe med valgfri styrkepointer.
-  - `oppdaterPhoto()` — leser fototransistor (A5) og oppdaterer automatisk lysstyrke.
-  - `oppdaterLys()` — oppdaterer lyskontroll basert på `manuelLys`-flag (automatisk vs manuell).
-  - `autoLysStyring(...)` — bestemmer om lys skal styres automatisk basert på lysintensitet.
-  - Flags: `isStueAktiv`, `isBadAktiv`, `manuelLys
-  - `lysFarge(gruppe, r, g, b)` — setter farge for valgt gruppe (verdier 0-255).
-  - Merk: nåværende implementasjon inneholder intern knappetoggle knyttet til `bOK`.
+  - Enum `lys_gruppe` og deklarasjoner for lysstyrings-API.
+
+- [src/lys.cpp](src/lys.cpp)
+  - `initlys()` — initialiserer lys-pinner som output.
+  - `oppdaterPhoto()` — leser fototransistor og oppdaterer lysstyrke for stue.
+  - `oppdaterLys()` — aktiverer/deaktiverer lys basert på flagg.
+  - `autoLysStyring()` — bestemmer om automatisk styring er aktiv.
+  - `aktivLys()` — setter lysstyrke for spesifikk gruppe.
+  - `lysDimming()` — dimmer lys ved å endre PWM-verdi over tid.
+  - `lysStyrke()` — placeholder for fremtidig lysstyrke-funksjonalitet.
+  - Flags: `isStueAktiv`, `isBadAktiv`, `manuelLys`.
 
 - [src/alarm.h](src/alarm.h)
   - Deklarasjoner for alarm-API (getters, oppdatering, start/stopp, reset).
@@ -65,10 +66,12 @@ s for stue (_LYS_STUE) og bad (_LYS_BAD); skriver PWM-verdier.
 Notater og anbefalinger
 ----------------------
 - **DHT11-sensor**: `readDHT11()` er implementert og fungerer for fukt- og temperaturlesing. `serialTempFukt()` viser data.
-- **Automatisk lysstyrking**: `autoLysStyring()` og `oppdaterPhoto()` bruker fototransistor for automatisk lysintensitet-justering. Kan toggles med `manuelLys`-flag.
+- **Automatisk lysstyring**: `autoLysStyring()` og `oppdaterPhoto()` bruker fototransistor for automatisk lysintensitet-justering. Kan toggles med `manuelLys`-flag.
+- **Lys-dimming**: `lysDimming()` tillater manuell dimming av bad-lys ved å holde OK-knappen.
 - **Dør-/vindu-sensorer**: `DOOR_WINDOW`-meny er deklarert men ikke implementert (knapp-handler er kommentert ut).
 - **Innstillinger-meny**: `HJEM_MENY_INSTILLINGER` er deklarert men ikke implementert.
 - **Lysmenyer**: `tegn_LYSHOVED()` og `tegn_LYSBAD()` er implementert for separat kontroll av stue og bad.
+- **Reset-funksjonalitet**: `tegn_RST_INST()` håndterer reset av instillinger med bekreftelse.
 - Vær oppmerksom på eksisterende bug hvor et `if` muligens bruker `=` i stedet for `==` ved meny-sjekk (søk etter `if (aktivMeny =`).
 
 Prioriteringer for videre utvikling
@@ -80,6 +83,6 @@ Prioriteringer for videre utvikling
 5. **Utvidelser**: Vurder ytterligere funksjonalitet basert på brukererfaring.
 
 ---
-Sist oppdatert: 3. mars 2026
+Sist oppdatert: 9. mars 2026
 
 `Fil laget av KI`

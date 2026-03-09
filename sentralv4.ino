@@ -59,12 +59,12 @@ void loop() {
   //buttonHolding(33) ? Serial.println("TRUE") : Serial.println("FALSE");
   //isDimmed == true ? Serial.println("TRUE") : Serial.println("FALSE");
   
-  tegnMeny();
+  tegnMeny();  // Oppdaterer LCD-meny basert på aktiv menytilstand
   
-  readDHT11(fuktDHT, tempDHT, flength);
-  readTMP36(TMPpin, tempTMP, tlength);
+  readDHT11(fuktDHT, tempDHT, flength);  // Leser fuktighet og temperatur fra DHT11-sensor
+  readTMP36(TMPpin, tempTMP, tlength);   // Leser temperatur fra TMP36-sensor
   
-  oppdaterPhoto();
-  oppdaterLys();
-  lesSerial();
+  oppdaterPhoto();  // Oppdaterer lysstyrke for stue basert på fototransistor
+  oppdaterLys();    // Aktiverer/deaktiverer lys for stue og bad basert på flagg
+  lesSerial();      // Behandler kommandoer mottatt via Serial for debugging/testing
 }
