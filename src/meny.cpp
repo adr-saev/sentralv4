@@ -13,7 +13,13 @@ Version: 1.0
 extern float tempTMP[];
 extern float tempDHT[];
 extern float fuktDHT[];
+
 extern int _STYRKE_BAD;
+extern bool isDimmed;
+
+bool isStueAktiv = false;
+bool isBadAktiv = false;
+bool manuelLys = false;
 
 //--------------------------------------------------
 
@@ -33,9 +39,7 @@ static AKTIV_LYS_MENY lysValg = HOVEDROM;
 static LYS_HOVEDROM l_hvd = ACTIVE_HVDROM;
 static LYS_BAD l_bad = ACTIVE_BAD;
 
-bool isStueAktiv = false;
-bool isBadAktiv = false;
-bool manuelLys = false; // false = fototransistor styrer
+
 
 // settMeny()
 // Funksjon brukt til og endre menyen til ønsket meny.
@@ -386,7 +390,7 @@ void tegn_LYSBAD() {
     lcd.print(dimming_prosent);
     lcd.print("%");
 
-    if(buttonHolding(bOK)) {
+    if(isBadAktiv && buttonHolding(bOK)) {
       isDimmed = true;
       lysDimming(_LYS_BAD, _STYRKE_BAD, dimme_retning);
     }

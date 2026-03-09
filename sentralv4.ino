@@ -52,10 +52,12 @@ void setup() {
   initButtons();
   initlys();
   delay(1500);
-  //settMeny(LYS_MENY);
+  settMeny(LYS_MNY_BAD);
 }
 
 void loop() {
+  //buttonHolding(33) ? Serial.println("TRUE") : Serial.println("FALSE");
+  //isDimmed == true ? Serial.println("TRUE") : Serial.println("FALSE");
   
   tegnMeny();
   
@@ -64,6 +66,5 @@ void loop() {
   
   oppdaterPhoto();
   oppdaterLys();
-
   lesSerial();
 }

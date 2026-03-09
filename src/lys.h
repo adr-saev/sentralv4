@@ -10,20 +10,21 @@
 #ifndef LYS_H
 #define LYS_H
 
-enum lys_gruppe { _LYS_BAD = 5, _LYS_STUE = 9 };
+enum lys_gruppe { _LYS_BAD = 5, _LYS_STUE = 6 };
 
 const int foto_transistor_STUE = A5;
 // const int foto_transistor_STUE = A7;
 
+
 extern bool isStueAktiv;
 extern bool isBadAktiv;
+extern bool manuelLys; // false = fototransistor styrer
 
-extern bool manuelLys;
 
 bool autoLysStyring(bool manuelLys);
 void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr,
               bool *dimStatus = nullptr);
-void lysDimming(lys_gruppe gruppe, int &lys_styrke, int &dimme_retning);
+void lysDimming(lys_gruppe gruppe, int &_STYRKE_BAD, int &dimme_retning);
 void initlys();
 void oppdaterPhoto();
 void oppdaterLys();

@@ -76,7 +76,7 @@ void serialLys(lys_gruppe gruppe) {
   }
   if (isStueAktiv && autoLysStyring(manuelLys)) {
     Serial.print("Lys PÅ (automatisk), styrke: ");
-    Serial.println(*_STYRKE_STUE);
+    Serial.println(_STYRKE_STUE);
   } else {
         Serial.print("Lys gruppe ");
     Serial.print(gruppe);
@@ -196,6 +196,7 @@ void lesSerial() {
     if (cmd == "TEST_DIM_FUNC") {
       isDimmed = true;
       isBadAktiv = true;
+      settMeny(LYS_MNY_BAD);
 
     } else if (cmd.startsWith("DIMMING_VERDI")) {
       int nyVerdi;

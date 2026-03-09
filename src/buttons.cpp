@@ -104,7 +104,7 @@ bool buttonHolding(int pin) {
   if (millis() - lastChange > 10) {
     stableState = state;
 
-    if (stableState == LOW) {
+    if (stableState == HIGH) {
       result = true;
     }
   }

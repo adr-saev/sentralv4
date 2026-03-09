@@ -60,7 +60,11 @@ void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr,
   const int FAST_STYRKE = 255;
 
   if (!isAktiv) {
-    isDimmed = false;
+    
+    if(gruppe == _LYS_BAD) {
+      isDimmed = false;
+    }
+
     analogWrite(gruppe, 0);
     return;
   }
@@ -87,23 +91,24 @@ void aktivLys(lys_gruppe gruppe, bool isAktiv, int *_STYRKE_STUE = nullptr,
     }
   }
 }
-void lysDimming(lys_gruppe gruppe, int &lys_styrke, int &dimme_retning) {
+void lysDimming(lys_gruppe gruppe, int &_STYRKE_BAD, int &dimme_retning) {
 
-  lys_styrke += dimme_retning;
+  _STYRKE_BAD += dimme_retning;
 
-  if (lys_styrke > 255 || lys_styrke < 0) {
+  if (_STYRKE_BAD > 255 || _STYRKE_BAD < 0) {
     dimme_retning = -dimme_retning;
   }
 
-  analogWrite(gruppe, lys_styrke);
+  _STYRKE_BAD = constrain(_STYRKE_BAD, 0, 255);
+  analogWrite(gruppe, _STYRKE_BAD);
 
   // DEBUG
   Serial.print("Dimming Pin ");
   Serial.print(gruppe);
   Serial.print(" til: ");
-  Serial.println(lys_styrke);
+  Serial.println(_STYRKE_BAD);
 
-  delay(20);
+  delay(50);
 }
 
 /*Funksjon for å variere lysstyrken. I stuen skal man kunne dimme lysene.
